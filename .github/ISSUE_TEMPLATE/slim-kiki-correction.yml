@@ -1,0 +1,33 @@
+name: Slim Kiki correction
+description: Report an incorrect Slim Kiki answer with the conversation context.
+title: "[Slim Kiki] "
+labels: ["slim-kiki", "training"]
+body:
+  - type: markdown
+    attributes:
+      value: "Thank you. This report becomes a regression test only after the expected FLUX plan or answer has been reviewed."
+  - type: textarea
+    id: question
+    attributes:
+      label: User question
+      description: Paste the exact question.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual answer
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Structured FLUX context
+      description: Selection, filters, dimensions and calculation from the lab or FLUX.
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected answer or plan
+      description: Explain the expected filters, grouping, sorting, calculation or answer.
+    validations:
+      required: true
