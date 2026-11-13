@@ -1,73 +1,83 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Slim Kiki Lab</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f8fb">
+  <title>Slim Kiwi Training</title>
   <style>
-    :root { --ink:#16202a; --muted:#65737d; --leaf:#5eaa72; --lime:#d9f2ad; --paper:#f7f9f6; --line:#dfe7df; --bubble:#fff; --night:#122019; --flux-blue:#2764d7; --flux-blue-deep:#173e93; --flux-surface:#fff; --flux-page:#f4f7fb; --flux-line:#d9e1ee; --flux-radius:10px; }
-    * { box-sizing:border-box; } body { margin:0; min-width:320px; font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; background:var(--paper); color:var(--ink); }
-    .app { min-height:100vh; display:grid; grid-template-columns:minmax(330px,43%) 1fr; overflow:hidden; }
-    .chat { min-height:100vh; background:#fcfffa; border-right:1px solid var(--line); display:flex; flex-direction:column; }
-    .top { min-height:76px; padding:17px 22px; display:flex; align-items:center; gap:12px; border-bottom:1px solid var(--line); background:rgba(252,255,250,.94); }
-    .kiwi { width:40px; height:40px; border-radius:14px; display:grid; place-items:center; background:radial-gradient(circle at 32% 27%,#eaffc7 0 12%,var(--lime) 13% 58%,#8dcc68 59%); box-shadow:inset 0 -5px 9px #609f5870; font-size:22px; }
-    .top h1 { font-size:16px; margin:0; letter-spacing:-.2px; }.top p{font-size:12px;margin:2px 0 0;color:var(--muted)}
-    .mode { margin-left:auto; border:1px solid var(--line); color:#365642; background:white; padding:7px 10px; border-radius:11px; font-size:12px; }
-    .messages { flex:1; overflow:auto; padding:24px 22px; display:flex; flex-direction:column; gap:14px; }
-    .bubble { max-width:92%; padding:13px 15px; border:1px solid var(--line); background:var(--bubble); border-radius:18px 18px 18px 4px; line-height:1.45; font-size:14px; box-shadow:0 4px 16px #1b35120a; white-space:pre-wrap; }.bubble.you{align-self:flex-end;background:#e9f6df;border-color:#d8ebca;border-radius:18px 18px 4px 18px}.bubble small{display:block;font-size:11px;color:var(--muted);margin-bottom:4px}.empty{color:var(--muted);font-size:14px;line-height:1.55;margin:auto 0}
-    .composer { padding:15px 18px 18px; border-top:1px solid var(--line); background:white; }.composer textarea{width:100%;resize:none;min-height:62px;border:1px solid #cbd9ca;border-radius:14px;padding:12px;font:inherit;outline:none}.composer textarea:focus{border-color:var(--leaf);box-shadow:0 0 0 3px #a6d6aa44}.actions{display:flex;gap:8px;align-items:center;margin-top:9px}.actions span{font-size:11px;color:var(--muted);margin-right:auto}.button{border:0;border-radius:11px;padding:9px 12px;background:var(--night);color:white;font-weight:600;cursor:pointer}.button.secondary{background:white;color:#26382b;border:1px solid #cbd9ca}.button:disabled{opacity:.55;cursor:not-allowed}
-    /* Right side: same FLUX application language — white shell, blue navigation,
-       compact cards and controls, rather than a promotional landing page. */
-    .workspace { min-width:0; min-height:100vh; display:flex; flex-direction:column; overflow:auto; background:var(--flux-page); }
-    .flux-shell-header{position:sticky;top:0;z-index:2;min-height:76px;display:flex;align-items:center;gap:18px;padding:0 25px;border-bottom:1px solid var(--flux-line);background:#fff;box-shadow:0 1px 0 rgba(16,45,90,.03)}
-    .flux-brand{font-weight:850;font-size:21px;letter-spacing:-1px;color:var(--flux-blue-deep)}
-    .flux-brand span{color:#62a96f}.flux-nav{display:flex;gap:5px;align-self:stretch;align-items:center}.flux-nav button{height:35px;padding:0 12px;border:0;border-radius:var(--flux-radius);color:#617087;background:transparent;font:600 12px/1 inherit}.flux-nav button.is-active{color:#fff;background:var(--flux-blue)}
-    .flux-top-action{margin-left:auto;border:0;border-radius:var(--flux-radius);padding:9px 13px;color:#fff;background:#16243c;font:600 12px/1 inherit}.flux-top-action::before{content:'✦';margin-right:7px;color:#c4dcff}
-    .flux-content{width:min(100%,1100px);margin:0 auto;padding:30px clamp(20px,3.3vw,46px) 48px}.flux-eyebrow{margin:0 0 7px;color:var(--flux-blue);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.workspace h2{margin:0;color:#172540;font-size:clamp(25px,3.3vw,42px);line-height:1.05;letter-spacing:-1.3px}.flux-intro{max-width:650px;margin:10px 0 21px;color:#637087;font-size:14px;line-height:1.55}
-    .flux-toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:15px;padding:10px 12px;border:1px solid var(--flux-line);border-radius:var(--flux-radius);background:#fff}.flux-toolbar strong{margin-right:4px;color:#28354e;font-size:12px}.flux-filter{padding:6px 9px;border:1px solid #d9e2ef;border-radius:7px;color:#53647d;background:#f7f9fc;font-size:11px}.flux-filter b{color:#233d72}.flux-toolbar small{margin-left:auto;color:#8290a4;font-size:11px}
-    .cards{display:grid;grid-template-columns:repeat(3,minmax(120px,1fr));gap:12px;margin-bottom:12px}.card{min-height:92px;padding:15px 16px;border:1px solid var(--flux-line);border-radius:var(--flux-radius);background:#fff;box-shadow:0 2px 7px rgba(30,58,104,.04)}.card b{display:block;margin-bottom:5px;color:#1b315e;font-size:23px;letter-spacing:-.6px}.card span{color:#728097;font-size:11px}
-    .flux-work-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(220px,.8fr);gap:12px}.panel{min-width:0;padding:18px;border:1px solid var(--flux-line);border-radius:var(--flux-radius);background:#fff;color:#1d2b43;box-shadow:0 2px 7px rgba(30,58,104,.04)}.panel>strong{font-size:14px}.panel p{margin:6px 0 14px;color:#718097;font-size:12px;line-height:1.5}.panel code{display:block;min-height:105px;padding:12px;border:1px solid #e2e8f1;border-radius:8px;color:#40516d;background:#f7f9fc;font:11px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow:auto}
-    .report{display:flex;flex-direction:column;align-items:flex-start;gap:9px;padding:18px;border:1px solid var(--flux-line);border-radius:var(--flux-radius);color:#31425e;background:#fff;box-shadow:0 2px 7px rgba(30,58,104,.04);font-size:12px;line-height:1.5}.report strong{font-size:14px;color:#1d2b43}.report .button{width:100%;order:3;margin-top:auto;border-radius:8px;background:var(--flux-blue);font-size:12px}.report .button.secondary{color:var(--flux-blue);border-color:#bed0f3;background:#f5f8ff}.report .button:disabled{color:#8090a8;border-color:#dce4f0;background:#f4f6f9}
-    @media(max-width:840px){.app{grid-template-columns:1fr}.workspace{order:-1;min-height:auto}.chat{min-height:70vh;border-right:0;border-top:1px solid var(--line)}.flux-shell-header{min-height:62px;padding:0 18px}.flux-nav{display:none}.flux-content{padding:24px 18px 32px}.flux-work-grid{grid-template-columns:1fr}.cards{grid-template-columns:repeat(3,1fr)}}
+    :root { color-scheme: light; --ink:#1c2530; --muted:#667085; --line:#dce3eb; --page:#f4f7fa; --panel:#fff; --blue:#0f6cbd; --blue-soft:#eaf3fb; --green:#4c956c; --kiwi:#c7dc50; --bubble:#eef6f1; --shadow:0 12px 36px rgba(17, 32, 50, .12); }
+    * { box-sizing:border-box; }
+    body { margin:0; min-width:320px; background:var(--page); color:var(--ink); font-family:"Segoe UI", SegoeUI, Arial, sans-serif; }
+    button, textarea { font:inherit; }
+    .app { min-height:100vh; display:grid; grid-template-columns:minmax(300px, .9fr) minmax(380px, 1.2fr); gap:24px; padding:24px; max-width:1420px; margin:0 auto; }
+    .panel { background:var(--panel); border:1px solid var(--line); border-radius:18px; box-shadow:0 4px 18px rgba(29, 48, 67, .06); min-width:0; }
+    .training { padding:28px; display:flex; flex-direction:column; gap:22px; }
+    h1 { margin:0; font-size:24px; font-weight:600; letter-spacing:-.3px; }
+    .sub { margin:7px 0 0; color:var(--muted); font-size:14px; line-height:1.45; }
+    .field { display:grid; gap:8px; }
+    label { font-weight:600; font-size:13px; color:#334155; }
+    textarea { width:100%; min-height:104px; resize:vertical; border:1px solid #b9c6d2; border-radius:10px; padding:12px; color:var(--ink); outline:none; background:#fff; line-height:1.45; }
+    textarea:focus { border-color:var(--blue); box-shadow:0 0 0 2px rgba(15,108,189,.16); }
+    .hint { color:var(--muted); font-size:12px; }
+    .report { margin-top:auto; width:100%; border:0; border-radius:10px; padding:12px 16px; background:var(--blue); color:#fff; font-weight:600; cursor:pointer; transition:background .16s ease, transform .16s ease; }
+    .report:hover { background:#0b5ea8; transform:translateY(-1px); }
+    .status { min-height:18px; margin:0; color:var(--green); font-size:13px; }
+    .kiki-window { overflow:hidden; display:flex; flex-direction:column; min-height:720px; background:#f8faf9; }
+    .kiki-header { min-height:74px; display:flex; align-items:center; gap:12px; padding:13px 18px; background:rgba(255,255,255,.96); border-bottom:1px solid var(--line); position:relative; z-index:2; }
+    .avatar { width:45px; height:45px; flex:0 0 45px; border-radius:50%; display:grid; place-items:center; font-size:28px; line-height:1; background:radial-gradient(circle at 36% 31%, #f5fbba 0 10%, var(--kiwi) 11% 63%, #96ba3b 64% 100%); box-shadow:inset 0 -3px 0 rgba(44,84,25,.14), 0 2px 5px rgba(50,77,20,.15); }
+    .headcopy { min-width:0; }
+    .name { margin:0; font-size:16px; font-weight:650; }
+    .presence { display:flex; align-items:center; gap:6px; margin-top:2px; color:var(--muted); font-size:12px; }
+    .dot { width:8px; height:8px; border-radius:50%; background:#4c956c; }
+    .close { margin-left:auto; width:36px; height:36px; border:0; border-radius:9px; background:transparent; color:#364152; font-size:25px; font-weight:300; cursor:pointer; }
+    .close:hover { background:#f0f3f6; }
+    .thread { flex:1; padding:23px 22px 18px; overflow:auto; display:flex; flex-direction:column; gap:18px; background:linear-gradient(180deg,#fbfdfc 0%,#f6faf7 100%); }
+    .message { display:flex; gap:9px; align-items:flex-end; max-width:87%; }
+    .message.user { align-self:flex-end; flex-direction:row-reverse; }
+    .mini-avatar { width:30px; height:30px; border-radius:50%; display:grid; place-items:center; background:radial-gradient(circle at 36% 31%, #f5fbba 0 10%, var(--kiwi) 11% 63%, #96ba3b 64% 100%); font-size:19px; }
+    .person { width:30px; height:30px; border-radius:50%; display:grid; place-items:center; background:#dceaf7; color:#24547a; font-size:14px; font-weight:650; }
+    .bubble { padding:12px 14px; border-radius:16px 16px 16px 4px; background:var(--bubble); border:1px solid #d8eadf; font-size:14px; line-height:1.48; box-shadow:0 1px 1px rgba(37,58,44,.04); }
+    .user .bubble { background:var(--blue); color:#fff; border-color:var(--blue); border-radius:16px 16px 4px 16px; }
+    .bubble p { margin:0; }
+    .criteria { display:grid; gap:6px; margin-top:10px; padding-top:9px; border-top:1px solid rgba(84,125,97,.18); color:#445a4c; font-size:12px; }
+    .criteria strong { color:#1d3b26; }
+    .composer { padding:14px 16px 16px; background:#fff; border-top:1px solid var(--line); }
+    .compose { display:flex; align-items:center; gap:10px; min-height:46px; padding:5px 6px 5px 14px; border:1px solid #b9c6d2; border-radius:12px; background:#fff; }
+    .compose span { flex:1; color:#7a8794; font-size:14px; }
+    .send { width:34px; height:34px; border:0; border-radius:9px; background:var(--blue); color:#fff; cursor:pointer; font-size:16px; }
+    @media (max-width:850px) { .app { grid-template-columns:1fr; padding:12px; gap:12px; } .training { order:2; padding:20px; } .kiki-window { min-height:620px; } }
   </style>
 </head>
 <body>
   <main class="app">
-    <section class="chat" aria-label="Slim Kiki conversation">
-      <header class="top"><div class="kiwi" aria-hidden="true">🥝</div><div><h1>Slim Kiki</h1><p>Browser training lab · local session</p></div><span class="mode">AI Mode</span></header>
-      <div id="messages" class="messages"><p class="empty">Try a real FLUX question. This lab keeps only this browser session and turns a bad answer into a ready-to-send Wiki Kiwi report.</p></div>
-      <form id="composer" class="composer"><textarea id="question" placeholder="For example: Which course manager in IT Training has the most learners?" aria-label="Ask Slim Kiki"></textarea><div class="actions"><span id="state">Ready for a training turn</span><button class="button secondary" id="clear" type="button">Reset</button><button class="button" type="submit">Ask Slim Kiki</button></div></form>
+    <section class="panel training" aria-label="Slim Kiwi Training">
+      <header><h1>Slim Kiwi Training App</h1><p class="sub">Review a response, explain what should change, then send the correction to Wiki Kiwi.</p></header>
+      <div class="field"><label for="question">Question</label><textarea id="question" aria-label="Question">Which course manager has the most ALPs in IT Training?</textarea></div>
+      <div class="field"><label for="correction">Expected answer or correction</label><textarea id="correction" aria-label="Expected answer or correction" placeholder="Describe the correct interpretation or answer…"></textarea><span class="hint">The conversation context and displayed response will be included.</span></div>
+      <p id="status" class="status" aria-live="polite"></p>
+      <button id="report" class="report" type="button">Report to Wiki Kiwi</button>
     </section>
-    <section class="workspace" aria-label="Slim Kiwi Training App">
-      <header class="flux-shell-header"><div class="flux-brand">FL<span>UX</span></div><nav class="flux-nav" aria-label="Application views"><button class="is-active" type="button">Explore results</button><button type="button">Dashboard</button></nav><button class="flux-top-action" type="button">Slim Kiwi Training App</button></header>
-      <div class="flux-content">
-        <p class="flux-eyebrow">Training workspace</p><h2>Slim Kiwi Training App</h2>
-        <div class="flux-toolbar"><strong>Active criteria</strong><span class="flux-filter"><b>Source:</b> local session</span><span class="flux-filter"><b>Mode:</b> training</span><small>Structured FLUX plan</small></div>
-        <div class="cards"><div class="card"><b id="turns">0</b><span>training turns</span></div><div class="card"><b>Local</b><span>session context</span></div><div class="card"><b>Wiki Kiwi</b><span>correction queue</span></div></div>
-        <div class="flux-work-grid"><div class="panel"><strong>Current structured context</strong><p>This is the context that is sent with a correction report. It never includes credentials or hidden browser data.</p><code id="context">No validated FLUX selection yet.</code></div><div class="report"><strong>Found an incorrect answer?</strong><span>Send a correction report to Wiki Kiwi. It becomes a permanent regression case for Slim Kiki.</span><button class="button secondary" id="report" type="button" disabled>Report to Wiki Kiwi</button></div></div>
+    <section class="panel kiki-window" aria-label="Slim Kiki conversation">
+      <header class="kiki-header"><div class="avatar" aria-hidden="true">🥝</div><div class="headcopy"><p class="name">Slim Kiki</p><div class="presence"><span class="dot"></span>Ready to help</div></div><button class="close" aria-label="Close Slim Kiki" type="button">×</button></header>
+      <div class="thread" id="thread">
+        <div class="message user"><div class="person">LA</div><div class="bubble"><p>Which course manager has the most ALPs in IT Training?</p></div></div>
+        <div class="message"><div class="mini-avatar" aria-hidden="true">🥝</div><div class="bubble"><p>I’ll check the IT Training ALPs and rank course managers by their number of assigned ALPs.</p><div class="criteria"><span><strong>Sector:</strong> IT Training</span><span><strong>Result:</strong> ranking by course manager</span></div></div></div>
       </div>
+      <footer class="composer"><div class="compose" role="textbox" aria-label="Message Slim Kiki"><span>Ask Slim Kiki about FLUX…</span><button class="send" aria-label="Send message" type="button">➜</button></div></footer>
     </section>
   </main>
   <script>
-    const $ = id => document.getElementById(id);
-    const turns = [];
-    let last = null;
-    const normal = s => s.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g,' ').trim();
-    function bubble(role, text) { const el=document.createElement('div'); el.className='bubble '+role; el.innerHTML='<small>'+ (role==='you'?'You':'Slim Kiki') +'</small>'+text.replace(/&/g,'&amp;').replace(/</g,'&lt;'); $('messages').querySelector('.empty')?.remove(); $('messages').append(el); $('messages').scrollTop=$('messages').scrollHeight; return el; }
-    function makePlan(question) {
-      const q=normal(question); const sector=/\bit\b|information technology/.test(q)?'IT Training':undefined;
-      const manager=/course manager|manager/.test(q); const learners=/learner|participant|people trained/.test(q);
-      const top=/\bmost|highest|top|largest\b/.test(q); const average=/\baverage|mean\b/.test(q);
-      const scope={year:2026,ldSupported:true}; if(sector) scope.sector=sector;
-      return { scope, entity:manager?'manager':'alp', measure:learners?'learners':'alps', calculation:average?'average':top&&learners?'sum':'count', grouping:top&&manager?'manager':null, resultShape:top&&manager?'grouped-ranking':'records' };
-    }
-    function demoAnswer(plan) {
-      if(plan.resultShape==='grouped-ranking') return 'I understood a ranking by <b>course manager</b>, filtered to <b>'+ (plan.scope.sector||'all sectors') +'</b>, using the <b>sum of learners</b>. Connect this lab to your FLUX catalogue to execute the result.';
-      return 'I captured a <b>'+plan.resultShape+'</b> request for <b>'+plan.measure+'</b>. This training page records the plan and opens a correction report if it is not the intended interpretation.';
-    }
-    $('composer').addEventListener('submit', event => { event.preventDefault(); const question=$('question').value.trim(); if(!question)return; bubble('you',question); const plan=makePlan(question); last={question,plan,answer:demoAnswer(plan),history:turns.slice(-5)}; turns.push(last); window.sessionStorage.setItem('slim-kiki-lab',JSON.stringify(turns)); $('context').textContent=JSON.stringify(plan,null,2); $('turns').textContent=turns.length; window.setTimeout(()=>bubble('kiki',last.answer),180); $('question').value=''; $('report').disabled=false; $('state').textContent='Plan captured — report any mistake'; });
-    $('clear').onclick=()=>{turns.length=0;last=null;sessionStorage.removeItem('slim-kiki-lab');$('messages').innerHTML='<p class="empty">Fresh session. Ask a real FLUX question.</p>';$('context').textContent='No validated FLUX selection yet.';$('turns').textContent='0';$('report').disabled=true;$('state').textContent='Ready for a training turn';};
-    $('report').onclick=()=>{ if(!last)return; const body=['## Slim Kiki correction report','','**Question**','```',last.question,'```','','**Answer shown**','```',last.answer.replace(/<[^>]+>/g,''),'```','','**Structured context**','```json',JSON.stringify(last.plan,null,2),'```','','**Expected answer / correction**','Please describe the correct FLUX result or intended plan.'].join('\n'); const url='https://github.com/modulow/flux-wii-backup/issues/new?template=slim-kiki-correction.yml&title='+encodeURIComponent('[Slim Kiki] '+last.question.slice(0,80))+'&body='+encodeURIComponent(body); window.open(url,'_blank','noopener'); $('state').textContent='Correction report opened for Wiki Kiwi'; };
+    const report = document.getElementById('report');
+    const status = document.getElementById('status');
+    report.addEventListener('click', () => {
+      const question = document.getElementById('question').value.trim();
+      const correction = document.getElementById('correction').value.trim();
+      const body = `Question:\n${question}\n\nCorrection expected:\n${correction || '(not specified)'}\n\nContext:\nSlim Kiwi Training App`;
+      const url = 'https://github.com/modulow/slim-kiki-lab/issues/new?title=' + encodeURIComponent('Slim Kiki correction') + '&body=' + encodeURIComponent(body);
+      status.textContent = 'Your correction is ready for Wiki Kiwi.';
+      window.open(url, '_blank', 'noopener');
+    });
   </script>
 </body>
 </html>
